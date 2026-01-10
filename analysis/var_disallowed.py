@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 from config import *
-from io.loader import load_season
+from data_io.loader import load_season
 from match.events import time_to_concede
 from match.state import players_on_field, score_at_minute, match_state_at_minute
 

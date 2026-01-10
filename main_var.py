@@ -1,7 +1,7 @@
 from analysis.var_disallowed import *
 from config import *
 from viz.var_plots import *
-from io.loader import build_match_lookup
+from data_io.loader import build_match_lookup
 
 SEASON_FILES = [
     DATA_DIR / "season_2018-19.json",
