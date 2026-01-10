@@ -1,6 +1,6 @@
-from football_analysis.analysis.var_disallowed import *
-from football_analysis.viz.var_plots import *
-from football_analysis.io.loader import build_match_lookup
+from analysis.var_disallowed import *
+from viz.var_plots import *
+from io.loader import build_match_lookup
 
 SEASON_FILES = [
     DATA_DIR / "season_2018-19.json",

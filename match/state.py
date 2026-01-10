@@ -1,4 +1,4 @@
-from football_analysis.config import *
+from config import *
 
 def score_at_minute(events, minute):
     home_goals = 0

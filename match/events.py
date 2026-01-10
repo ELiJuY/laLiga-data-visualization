@@ -1,4 +1,4 @@
-from football_analysis.config import *
+from config import *
 
 
 def time_to_concede(events, minute_event, team, t_max):

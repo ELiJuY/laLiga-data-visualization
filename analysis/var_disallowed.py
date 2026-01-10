@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 
-from football_analysis.config import *
-from football_analysis.io.loader import load_season
-from football_analysis.match.events import time_to_concede
-from football_analysis.match.state import players_on_field, score_at_minute, match_state_at_minute
+from config import *
+from io.loader import load_season
+from match.events import time_to_concede
+from match.state import players_on_field, score_at_minute, match_state_at_minute
 
 RELEVANT_EVENTS = {
     "Goal",

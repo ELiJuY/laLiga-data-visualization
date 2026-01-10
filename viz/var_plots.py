@@ -1,7 +1,7 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-from football_analysis.config import *
+from config import *
 
 
 def plot_goal_curves(t_var, p_var, t_ctrl, p_ctrl):
