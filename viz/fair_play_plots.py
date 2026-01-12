@@ -2,51 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from config import GOLEADA_THRESHOLD
 
-
-def plot_yellow_rate_goleadas(df_fp):
-
-    df_goleada = df_fp[df_fp["diff"] != "outside"].copy()
-
-    grouped = (
-        df_goleada
-        .groupby("season", as_index=False)
-        .agg({
-            "yellow": "sum",
-            "minutes": "sum"
-        })
-    )
-
-    grouped["yellow_rate"] = grouped["yellow"] / grouped["minutes"]
-
-    grouped = grouped.sort_values("season")
-
-    plt.figure(figsize=(9, 5))
-    plt.plot(
-        grouped["season"],
-        grouped["yellow_rate"],
-        marker="o",
-        linewidth=2
-    )
-
-    plt.xlabel("Temporada")
-    plt.ylabel("Tarjetas amarillas por minuto (goleada)")
-    plt.title(
-        "Evolución de las tarjetas amarillas en situaciones de goleada\n"
-        f"(diferencia ≥ {GOLEADA_THRESHOLD} goles)"
-    )
-
-    plt.grid(True, axis="y", alpha=0.3)
-    plt.xticks(rotation=45)
-    plt.tight_layout()
-    plt.show()
-
-
-import matplotlib.pyplot as plt
-import pandas as pd
-
-from config import GOLEADA_THRESHOLD
-
-
 def plot_yellow_rate_ratio(df_fp):
     """
     Line plot del ratio:
@@ -97,14 +52,14 @@ def plot_yellow_rate_ratio(df_fp):
         color="gray",
         linestyle="--",
         linewidth=1,
-        label="Igual que fuera de goleada"
+        label="Same as non-large goal-difference situation"
     )
 
-    plt.xlabel("Temporada")
-    plt.ylabel("Ratio de amarillas (goleada / no goleada)")
+    plt.xlabel("Season")
+    plt.ylabel("Yellow card ratio (lopsided vs non-lopsided matches)")
     plt.title(
-        "Evolución relativa de las amonestaciones en situaciones de goleada\n"
-        f"(diferencia ≥ {GOLEADA_THRESHOLD} goles)"
+        "Relative evolution of bookings in large goal-difference situations\n"
+        f"(difference ≥ {GOLEADA_THRESHOLD} goals)"
     )
 
     plt.xticks(rotation=45)
@@ -151,7 +106,7 @@ def plot_minutes_per_yellow_goleada_vs_outside(df_fp):
         merged["min_per_yellow_goleada"],
         marker="o",
         linewidth=2,
-        label="Goleada (diff ≥ 3)"
+        label="Lopsided (diff ≥ 3)"
     )
 
     plt.plot(
@@ -159,55 +114,19 @@ def plot_minutes_per_yellow_goleada_vs_outside(df_fp):
         merged["min_per_yellow_outside"],
         marker="o",
         linewidth=2,
-        label="Fuera de goleada"
+        label="Not lopsided"
     )
 
-    plt.xlabel("Temporada")
-    plt.ylabel("Minutos por tarjeta amarilla")
+    plt.xlabel("Season")
+    plt.ylabel("Minutes per yellow card")
     plt.title(
-        "Minutos por tarjeta amarilla:\n"
-        f"Goleada (diff ≥ {GOLEADA_THRESHOLD}) vs fuera de goleada"
+        "Minutes per yellow card:\n"
+        f"Large goal-difference (diff ≥ {GOLEADA_THRESHOLD}) vs non-large goal-difference"
     )
 
     plt.xticks(rotation=45)
     plt.grid(True, axis="y", alpha=0.3)
     plt.legend()
-    plt.tight_layout()
-    plt.show()
-
-
-def plot_minutes_in_goleada(df_fp):
-    """
-    Line plot de los minutos totales jugados en situación de goleada
-    (diff >= GOLEADA_THRESHOLD) por temporada.
-    """
-
-    df_goleada = df_fp[df_fp["diff"] != "outside"]
-
-    minutes = (
-        df_goleada
-        .groupby("season", as_index=False)["minutes"]
-        .sum()
-        .sort_values("season")
-    )
-
-    plt.figure(figsize=(9, 5))
-    plt.plot(
-        minutes["season"],
-        minutes["minutes"],
-        marker="o",
-        linewidth=2
-    )
-
-    plt.xlabel("Temporada")
-    plt.ylabel("Minutos en situación de goleada")
-    plt.title(
-        f"Minutos totales jugados en situaciones de goleada\n"
-        f"(diferencia ≥ {GOLEADA_THRESHOLD} goles)"
-    )
-
-    plt.xticks(rotation=45)
-    plt.grid(True, axis="y", alpha=0.3)
     plt.tight_layout()
     plt.show()
 
@@ -236,10 +155,10 @@ def plot_goleada_minutes_boxplot(df_fp):
         showfliers=True
     )
 
-    plt.ylabel("Minutos en situación de goleada")
+    plt.ylabel("Minutes in large goal-difference situation")
     plt.title(
-        "Distribución de minutos en situaciones de goleada\n"
-        f"(diferencia ≥ {GOLEADA_THRESHOLD} goles)"
+        "Distribution of minutes in situations of a large goal-difference\n"
+        f"(difference ≥ {GOLEADA_THRESHOLD} goals)"
     )
 
     plt.grid(True, axis="y", alpha=0.3)
@@ -289,10 +208,10 @@ def plot_goleada_yellows_boxplot(df_fp):
         showfliers=True
     )
 
-    plt.ylabel("Tarjetas amarillas en situaciones de goleada")
+    plt.ylabel("Yellow cards in large goal-difference situation")
     plt.title(
-        "Distribución de tarjetas amarillas en situaciones de goleada\n"
-        f"(diferencia ≥ {GOLEADA_THRESHOLD} goles)"
+        "Distribution of yellow cards in situations of a large goal-difference\n"
+        f"(difference ≥ {GOLEADA_THRESHOLD} goals)"
     )
 
     plt.grid(True, axis="y", alpha=0.3)
@@ -318,78 +237,6 @@ def plot_goleada_yellows_boxplot(df_fp):
         print("No se detectan temporadas outlier según el criterio IQR.")
 
 
-RED_BLOCK_SIZE = 3
-
-def plot_red_cards_goleada_trend(df_fp):
-    """
-    Gráfico exploratorio de la tendencia de tarjetas rojas
-    en situaciones de goleada (diff >= GOLEADA_THRESHOLD),
-    agrupando temporadas en bloques de tamaño RED_BLOCK_SIZE.
-    """
-
-    # Filtrar solo situaciones de goleada
-    df_goleada = df_fp[df_fp["diff"] != "outside"]
-
-    # Agregar por temporada
-    reds_by_season = (
-        df_goleada
-        .groupby("season", as_index=False)
-        .agg({
-            "red": "sum",
-            "second_yellow_red": "sum"
-        })
-    )
-
-    # Total de expulsiones
-    reds_by_season["total_reds"] = (
-        reds_by_season["red"] + reds_by_season["second_yellow_red"]
-    )
-
-    # Orden temporal
-    reds_by_season = reds_by_season.sort_values("season").reset_index(drop=True)
-
-    # Crear bloques
-    reds_by_season["block"] = (
-        reds_by_season.index // RED_BLOCK_SIZE
-    )
-
-    grouped = (
-        reds_by_season
-        .groupby("block")
-        .agg({
-            "season": ["first", "last"],
-            "total_reds": "mean"
-        })
-        .reset_index(drop=True)
-    )
-
-    grouped.columns = ["season_start", "season_end", "mean_reds"]
-
-    # Etiquetas del eje X
-    grouped["season_label"] = (
-        grouped["season_start"] + "–" + grouped["season_end"]
-    )
-
-    # Plot
-    plt.figure(figsize=(8, 5))
-    plt.plot(
-        grouped["season_label"],
-        grouped["mean_reds"],
-        marker="o",
-        linewidth=2
-    )
-
-    plt.xlabel("Bloque de temporadas")
-    plt.ylabel("Media de tarjetas rojas en goleadas")
-    plt.title(
-        "Tendencia exploratoria de tarjetas rojas en situaciones de goleada\n"
-        f"(agrupadas cada {RED_BLOCK_SIZE} temporadas)"
-    )
-
-    plt.xticks(rotation=45)
-    plt.grid(True, axis="y", alpha=0.3)
-    plt.tight_layout()
-    plt.show()
 
 def plot_minutes_vs_yellow_ratio(df_fp):
     """
@@ -435,17 +282,166 @@ def plot_minutes_vs_yellow_ratio(df_fp):
         color="gray",
         linestyle="--",
         linewidth=1,
-        label="Igual que fuera de goleada"
+        label="Same as non-large goal-difference situation"
     )
 
-    plt.xlabel("Minutos en situación de goleada (por temporada)")
-    plt.ylabel("Ratio de amarillas (goleada / no goleada)")
+    plt.xlabel("Minutes in large goal-difference situation (per season)")
+    plt.ylabel("Yellow card ratio (large goal-difference / non large goal-difference)")
     plt.title(
-        "Relación entre minutos de goleada\n"
-        "y severidad relativa de las amonestaciones"
+        "Relationship between minutes of scoring\n"
+        "and relative severity of bookings"
     )
 
     plt.grid(True, alpha=0.3)
     plt.legend()
     plt.tight_layout()
     plt.show()
+
+################################
+# DESCARTADOS
+################################
+#
+# RED_BLOCK_SIZE = 3
+#
+# def plot_red_cards_goleada_trend(df_fp):
+#     """
+#     Gráfico exploratorio de la tendencia de tarjetas rojas
+#     en situaciones de goleada (diff >= GOLEADA_THRESHOLD),
+#     agrupando temporadas en bloques de tamaño RED_BLOCK_SIZE.
+#     """
+#
+#     # Filtrar solo situaciones de goleada
+#     df_goleada = df_fp[df_fp["diff"] != "outside"]
+#
+#     # Agregar por temporada
+#     reds_by_season = (
+#         df_goleada
+#         .groupby("season", as_index=False)
+#         .agg({
+#             "red": "sum",
+#             "second_yellow_red": "sum"
+#         })
+#     )
+#
+#     # Total de expulsiones
+#     reds_by_season["total_reds"] = (
+#         reds_by_season["red"] + reds_by_season["second_yellow_red"]
+#     )
+#
+#     # Orden temporal
+#     reds_by_season = reds_by_season.sort_values("season").reset_index(drop=True)
+#
+#     # Crear bloques
+#     reds_by_season["block"] = (
+#         reds_by_season.index // RED_BLOCK_SIZE
+#     )
+#
+#     grouped = (
+#         reds_by_season
+#         .groupby("block")
+#         .agg({
+#             "season": ["first", "last"],
+#             "total_reds": "mean"
+#         })
+#         .reset_index(drop=True)
+#     )
+#
+#     grouped.columns = ["season_start", "season_end", "mean_reds"]
+#
+#     # Etiquetas del eje X
+#     grouped["season_label"] = (
+#         grouped["season_start"] + "–" + grouped["season_end"]
+#     )
+#
+#     # Plot
+#     plt.figure(figsize=(8, 5))
+#     plt.plot(
+#         grouped["season_label"],
+#         grouped["mean_reds"],
+#         marker="o",
+#         linewidth=2
+#     )
+#
+#     plt.xlabel("Bloque de temporadas")
+#     plt.ylabel("Media de tarjetas rojas en goleadas")
+#     plt.title(
+#         "Tendencia exploratoria de tarjetas rojas en situaciones de goleada\n"
+#         f"(agrupadas cada {RED_BLOCK_SIZE} temporadas)"
+#     )
+#
+#     plt.xticks(rotation=45)
+#     plt.grid(True, axis="y", alpha=0.3)
+#     plt.tight_layout()
+#     plt.show()
+#
+# def plot_yellow_rate_goleadas(df_fp):
+#
+#     df_goleada = df_fp[df_fp["diff"] != "outside"].copy()
+#
+#     grouped = (
+#         df_goleada
+#         .groupby("season", as_index=False)
+#         .agg({
+#             "yellow": "sum",
+#             "minutes": "sum"
+#         })
+#     )
+#
+#     grouped["yellow_rate"] = grouped["yellow"] / grouped["minutes"]
+#
+#     grouped = grouped.sort_values("season")
+#
+#     plt.figure(figsize=(9, 5))
+#     plt.plot(
+#         grouped["season"],
+#         grouped["yellow_rate"],
+#         marker="o",
+#         linewidth=2
+#     )
+#
+#     plt.xlabel("Temporada")
+#     plt.ylabel("Tarjetas amarillas por minuto (goleada)")
+#     plt.title(
+#         "Evolución de las tarjetas amarillas en situaciones de goleada\n"
+#         f"(diferencia ≥ {GOLEADA_THRESHOLD} goles)"
+#     )
+#
+#     plt.grid(True, axis="y", alpha=0.3)
+#     plt.xticks(rotation=45)
+#     plt.tight_layout()
+#     plt.show()
+#
+#     def plot_minutes_in_goleada(df_fp):
+#         """
+#         Line plot de los minutos totales jugados en situación de goleada
+#         (diff >= GOLEADA_THRESHOLD) por temporada.
+#         """
+#
+#         df_goleada = df_fp[df_fp["diff"] != "outside"]
+#
+#         minutes = (
+#             df_goleada
+#             .groupby("season", as_index=False)["minutes"]
+#             .sum()
+#             .sort_values("season")
+#         )
+#
+#         plt.figure(figsize=(9, 5))
+#         plt.plot(
+#             minutes["season"],
+#             minutes["minutes"],
+#             marker="o",
+#             linewidth=2
+#         )
+#
+#         plt.xlabel("Season")
+#         plt.ylabel("Large goal-difference situation minutes")
+#         plt.title(
+#             f"Total minutes played in large goal-difference situations\n"
+#             f"(difference ≥ {GOLEADA_THRESHOLD} goals)"
+#         )
+#
+#         plt.xticks(rotation=45)
+#         plt.grid(True, axis="y", alpha=0.3)
+#         plt.tight_layout()
+#         plt.show()

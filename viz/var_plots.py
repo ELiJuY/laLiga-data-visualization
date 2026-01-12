@@ -7,11 +7,11 @@ from config import *
 def plot_goal_curves(t_var, p_var, t_ctrl, p_ctrl):
 
     plt.figure(figsize=(8, 5))
-    plt.plot(t_var, p_var, label="VAR anulado", linewidth=2)
-    plt.plot(t_ctrl, p_ctrl, label="Control (sin evento)", linewidth=2)
+    plt.plot(t_var, p_var, label="VAR disallowed", linewidth=2)
+    plt.plot(t_ctrl, p_ctrl, label="Control (no event)", linewidth=2)
 
-    plt.xlabel("Minutos desde el evento")
-    plt.ylabel("Probabilidad acumulada de encajar gol")
+    plt.xlabel("Minutes after the event")
+    plt.ylabel("Cumulative probability of conceding a goal")
     plt.legend()
     plt.grid(True)
     plt.tight_layout()
@@ -39,10 +39,10 @@ def interaction_plot_by_state(df_analysis, horizon=15):
     for i, state in enumerate(states):
         plt.plot(groups, means[state], marker="o", label=state)
 
-    plt.xlabel("Grupo")
-    plt.ylabel(f"P(encajar gol ≤ {horizon} min)")
-    plt.title("Interaction plot: efecto VAR según estado del partido")
-    plt.legend(title="Estado")
+    plt.xlabel("Group")
+    plt.ylabel(f"P(conceding goal ≤ {horizon} min)")
+    plt.title("VAR effect depending on the state of the match")
+    plt.legend(title="State")
     plt.grid(True)
     plt.tight_layout()
     plt.show()
@@ -59,9 +59,9 @@ def boxplot_time_to_goal(df_analysis, max_t=15):
     ]
 
     plt.figure(figsize=(6, 5))
-    plt.boxplot(data, labels=["VAR anulado", "Control"], showfliers=True)
-    plt.ylabel("Minutos hasta encajar gol")
-    plt.title("Distribución del tiempo hasta encajar gol")
+    plt.boxplot(data, labels=["VAR disallowed", "Control"], showfliers=True)
+    plt.ylabel("Minutes until goal conceded")
+    plt.title("Time distribution until conceding a goal")
     plt.grid(True, axis="y")
     plt.tight_layout()
     plt.show()
@@ -73,9 +73,9 @@ def plot_var_minute_distribution(df_var, bin_width=5):
     plt.figure(figsize=(8, 4))
     plt.hist(df_var["minute"], bins=bins, edgecolor="black")
 
-    plt.xlabel("Minuto del partido")
-    plt.ylabel("Número de goles anulados por VAR")
-    plt.title("Distribución temporal de los goles anulados por VAR")
+    plt.xlabel("Minute of the match")
+    plt.ylabel("Number of goals disallowed by VAR")
+    plt.title("Temporal distribution of goals disallowed by VAR")
     plt.grid(axis="y", alpha=0.3)
 
     plt.tight_layout()
@@ -91,9 +91,9 @@ def plot_var_state_distribution(df_var):
     plt.figure(figsize=(6, 4))
     plt.bar(counts.index, counts.values)
 
-    plt.xlabel("Estado del equipo al anularse el gol")
-    plt.ylabel("Número de eventos")
-    plt.title("Estado del marcador en goles anulados por VAR")
+    plt.xlabel("Team state when the goal was disallowed")
+    plt.ylabel("Number of events")
+    plt.title("Scoreboard status for goals disallowed by VAR")
     plt.grid(axis="y", alpha=0.3)
 
     plt.tight_layout()
