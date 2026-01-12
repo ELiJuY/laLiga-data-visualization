@@ -27,15 +27,27 @@ STATE_WINNING = "winning"
 STATE_DRAWING = "drawing"
 STATE_LOSING = "losing"
 
+GOAL_EVENT = "Goal"
+PENALTI_GOAL_EVENT = "Goal from penalty"
+OWN_GOAL_EVENT = "Own goal"
+YELLOW_CARD_EVENT = "Yellow card"
+RED_CARD_EVENT = "Red card"
+SECOND_YELLOW_RED_EVENT = "2nd yellow card leads to red card"
+VAR_EVENT_TYPE = "Goal disallowed by VAR"
+
 GOAL_EVENTS = {
-    "Goal",
-    "Goal from penalty",
-    "Own goal"
+    GOAL_EVENT,
+    PENALTI_GOAL_EVENT,
+    OWN_GOAL_EVENT
+}
+
+CARD_EVENTS = {
+    YELLOW_CARD_EVENT,
+    RED_CARD_EVENT,
+    SECOND_YELLOW_RED_EVENT
 }
 
 RED_EVENTS = {
-    "Red card",
-    "2nd yellow card leads to red card"
+    RED_CARD_EVENT,
+    SECOND_YELLOW_RED_EVENT
 }
-
-VAR_EVENT_TYPE = "Goal disallowed by VAR"
