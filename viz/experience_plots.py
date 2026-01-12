@@ -10,19 +10,19 @@ def plot_young_vs_mature_elo_imbalanced(df):
     df.loc[
         (df["age_mean"] <= 26) & (df["age_diff"] <= -0.75),
         "age_group"
-    ] = "Jóvenes"
+    ] = "Young"
 
     df.loc[
         (df["age_mean"] >= 26.5) & (df["age_group"].isna()),
         "age_group"
-    ] = "Maduros"
+    ] = "Experienced"
 
     df = df.dropna(subset=["age_group"])
 
     df["elo_context"] = np.where(
         df["elo_diff"] > 7.5,
-        "Con ventaja",
-        "Con desventaja"
+        "With advantage",
+        "With disadvantage",
     )
 
     summary = (
@@ -40,12 +40,12 @@ def plot_young_vs_mature_elo_imbalanced(df):
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
 
-    for ax, context in zip(axes, ["Con ventaja", "Con desventaja"]):
+    for ax, context in zip(axes, ["With advantage", "With disadvantage"]):
         sub = summary[summary["elo_context"] == context]
 
         for i, pts in enumerate([0, 1, 3]):
             vals = []
-            for grp in ["Jóvenes", "Maduros"]:
+            for grp in ["Young", "Experienced"]:
                 v = sub[
                     (sub["age_group"] == grp) &
                     (sub["points"] == pts)
@@ -56,21 +56,21 @@ def plot_young_vs_mature_elo_imbalanced(df):
                 np.arange(2) + i * 0.25,
                 vals,
                 width=0.25,
-                label=f"{pts} puntos" if context == "Con ventaja" else None
+                label=f"{pts} points" if context == "With advantage" else None
             )
 
         ax.set_title(context)
         ax.set_xticks(np.arange(2) + 0.25)
-        ax.set_xticklabels(["Jóvenes", "Maduros"])
-        ax.set_xlabel("Tipo de equipo")
+        ax.set_xticklabels(["Young vs Experienced", "Experienced vs Experienced"])
+        ax.set_xlabel("Type of match")
         ax.grid(axis="y", alpha=0.3)
 
-    axes[0].set_ylabel("Proporción de partidos")
-    axes[0].legend(title="Resultado")
+    axes[0].set_ylabel("Proportion of matches")
+    axes[0].legend(title="Result")
 
     fig.suptitle(
-        "Resultados en partidos desequilibrados (|ΔELO| > 7.5)\n"
-        "comparando equipos jóvenes y maduros",
+        "Match outcomes in unbalanced games (|ΔELO| > 7.5)\n"
+        "comparing young and experienced teams",
         fontsize=12
     )
     print(df.groupby(["elo_context", "age_group"]).size())
@@ -92,12 +92,12 @@ def plot_young_vs_mature_balanced(df, elo_threshold=5):
     df.loc[
         (df["age_mean"] <= 26) & (df["age_diff"] <= -0.75),
         "age_group"
-    ] = "Jóvenes"
+    ] = "Young vs Experienced"
 
     df.loc[
         (df["age_mean"] > 26.5) & (df["age_group"].isna()),
         "age_group"
-    ] = "Maduros"
+    ] = "Experienced vs Experienced"
 
     df = df.dropna(subset=["age_group"])
 
@@ -111,7 +111,7 @@ def plot_young_vs_mature_balanced(df, elo_threshold=5):
     summary["total"] = summary.groupby("age_group")["count"].transform("sum")
     summary["prop"] = summary["count"] / summary["total"]
 
-    groups = ["Jóvenes", "Maduros"]
+    groups = ["Young vs Experienced", "Experienced vs Experienced"]
     points = [0, 1, 3]
 
     data = {
@@ -139,19 +139,19 @@ def plot_young_vs_mature_balanced(df, elo_threshold=5):
             x + i * width,
             [data[g][i] for g in groups],
             width,
-            label=f"{p} puntos"
+            label=f"{p} points"
         )
 
     plt.xticks(x + width, groups)
-    plt.xlabel("Tipo de equipo")
-    plt.ylabel("Proporción de partidos")
+    plt.xlabel("Type of match")
+    plt.ylabel("Proportion of matches")
     plt.title(
-        "Resultados en partidos igualados\n"
-        f"(|ΔELO| < {elo_threshold}) comparando equipos jóvenes y maduros"
+        "Match outcomes in balanced games\n"
+        f"(|ΔELO| < {elo_threshold}) comparing young and experienced teams"
     )
 
     plt.grid(axis="y", alpha=0.3)
-    plt.legend(title="Resultado")
+    plt.legend(title="Outcome")
     plt.tight_layout()
     print(df[
         (df["elo_diff"].abs() < elo_threshold)
@@ -165,12 +165,12 @@ def table_balanced_matches_counts(df, elo_threshold=5):
     df_balanced.loc[
         (df_balanced["age_mean"] <= 26) & (df_balanced["age_diff"] <= -0.75),
         "age_group"
-    ] = "Jóvenes"
+    ] = "Young"
 
     df_balanced.loc[
         (df_balanced["age_mean"] > 26.5) & (df_balanced["age_group"].isna()),
         "age_group"
-    ] = "Maduros"
+    ] = "Experienced"
 
     df_balanced = df_balanced.dropna(subset=["age_group"])
 
@@ -256,14 +256,14 @@ def plot_age_mean_boxplot(df):
     plt.figure(figsize=(6, 5))
     plt.boxplot(values, vert=True, showfliers=True)
 
-    plt.ylabel("Edad media del once inicial (años)")
-    plt.title("Distribución de la edad media del once inicial")
+    plt.ylabel("Average age of the starting eleven (years)")
+    plt.title("Average age distribution of the starting eleven")
 
     plt.grid(axis="y", alpha=0.3)
     plt.tight_layout()
     plt.show()
 
-    print("Resumen estadístico edad media:")
+    print("Statistical summary of average age:")
     print(values.describe())
 
 
@@ -277,14 +277,14 @@ def plot_elo_diff_boxplot(df):
     plt.figure(figsize=(6, 5))
     plt.boxplot(values, vert=True, showfliers=True)
 
-    plt.ylabel("Diferencia de ELO (equipo - rival)")
-    plt.title("Distribución de la diferencia de ELO entre equipos")
+    plt.ylabel("ELO difference (team - opponent)")
+    plt.title("Distribution of the ELO difference between teams")
 
     plt.grid(axis="y", alpha=0.3)
     plt.tight_layout()
     plt.show()
 
-    print("Resumen estadístico diferencia de ELO:")
+    print("Statistical summary of average ELO difference:")
     print(values.describe())
 
 ################################

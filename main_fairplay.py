@@ -1,9 +1,8 @@
 from analysis.fair_play_goleadas import build_fair_play_table
 from config import DATA_DIR
-from viz.fair_play_plots import (plot_yellow_rate_goleadas, plot_yellow_rate_ratio,
-                                 plot_minutes_in_goleada, plot_goleada_minutes_boxplot,
-                                 plot_minutes_per_yellow_goleada_vs_outside, plot_goleada_yellows_boxplot,
-                                 plot_red_cards_goleada_trend, plot_minutes_vs_yellow_ratio)
+from viz.fair_play_plots import (plot_yellow_rate_ratio, plot_goleada_minutes_boxplot,
+                                 plot_minutes_per_yellow_goleada_vs_outside,
+                                 plot_goleada_yellows_boxplot, plot_minutes_vs_yellow_ratio)
 
 SEASON_FILES = [
     DATA_DIR / "season_2000-01.json",
@@ -50,8 +49,6 @@ if __name__ == "__main__":
     # plot_red_cards_goleada_trend(df_fp)
     # Gráfico de (minutos_goleada vs ratio_amarillas)
     plot_minutes_vs_yellow_ratio(df_fp)
-
-
 
 
 
