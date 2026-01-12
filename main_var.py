@@ -1,5 +1,4 @@
 from analysis.var_disallowed import *
-from config import *
 from viz.var_plots import *
 from data_io.loader import build_match_lookup
 

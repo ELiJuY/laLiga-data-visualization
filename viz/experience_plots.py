@@ -1,6 +1,4 @@
 import numpy as np
-import pandas as pd
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 def plot_young_vs_mature_elo_imbalanced(df):
